@@ -48,7 +48,28 @@
 </div>
 
 <script>
-    // ★ ここにあなたのFirebaseの鍵を貼り付けてください ★
+    // // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCzKJyqnUrK8bejgnatlxhK6NmxjsOK2f0",
+  authDomain: "biz-task-sync.firebaseapp.com",
+  databaseURL: "https://biz-task-sync-default-rtdb.firebaseio.com",
+  projectId: "biz-task-sync",
+  storageBucket: "biz-task-sync.firebasestorage.app",
+  messagingSenderId: "648219626194",
+  appId: "1:648219626194:web:d17cd3e5790f52f57afb0b",
+  measurementId: "G-WXEX75Q9N9"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
     const firebaseConfig = {
         apiKey: "YOUR_API_KEY",
         authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -125,3 +146,4 @@
 </script>
 </body>
 </html>
+
