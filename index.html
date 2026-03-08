@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -28,7 +29,6 @@
     </style>
 </head>
 <body>
-
 <div class="container">
     <h2>🤝 チーム共有タスク Pro</h2>
     <div class="input-section">
@@ -46,25 +46,21 @@
     </div>
     <ul id="taskList"></ul>
 </div>
-
 <script>
-    // AIzaSyCzKJyqnUrK8bejgnatlxhK6NmxjsOK2f0
+    // ★ あなたの情報を反映済みです ★
     const firebaseConfig = {
         apiKey: "AIzaSyCzKJyqnUrK8bejgnatlxhK6NmxjsOK2f0",
         authDomain: "biz-task-sync.firebaseapp.com",
         databaseURL: "https://biz-task-sync-default-rtdb.firebaseio.com",
         projectId: "biz-task-sync",
         storageBucket: "biz-task-sync.appspot.com",
-        messagingSenderId: "648219626194",
+        messagingSenderId: "648219626194", 
         appId: "1:648219626194:web:d17cd3e5790f52f57afb0b"
     };
 
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-
-    database.ref('tasks').on('value', (snapshot) => {
-        renderTasks(snapshot.val());
-    });
+    database.ref('tasks').on('value', (snapshot) => { renderTasks(snapshot.val()); });
 
     function addTask() {
         const title = document.getElementById('taskInput').value;
@@ -72,7 +68,6 @@
         const date = document.getElementById('dateInput').value;
         const start = document.getElementById('startInput').value;
         if (!title) return alert("内容を入力してください");
-
         database.ref('tasks').push({ title, prio, date, start, completed: false });
         document.getElementById('taskInput').value = '';
     }
@@ -81,7 +76,6 @@
         const list = document.getElementById('taskList');
         list.innerHTML = '';
         if (!tasks) return;
-
         Object.keys(tasks).forEach(key => {
             const t = tasks[key];
             const li = document.createElement('li');
@@ -95,12 +89,10 @@
                     <button class="line-btn" onclick="shareLine('${t.title}', '${t.date}', '${t.start}')">LINE</button>
                     <button class="cal-btn" onclick="toGoogle('${t.title}', '${t.date}', '${t.start}')">Google</button>
                     <button class="del-btn" onclick="deleteTask('${key}')">削除</button>
-                </div>
-            `;
+                </div>`;
             list.appendChild(li);
         });
     }
-
     function toggleTask(key, status) { database.ref('tasks/' + key).update({ completed: !status }); }
     function deleteTask(key) { if(confirm('削除しますか？')) database.ref('tasks/' + key).remove(); }
     function shareLine(t, d, s) { window.open(`https://line.me/R/msg/text/?${encodeURIComponent(t + '\n' + d + ' ' + s)}`, '_blank'); }
