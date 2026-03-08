@@ -2,19 +2,104 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>My Task App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Task Sync Pro</title>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
     <style>
-        body { font-family: sans-serif; text-align: center; background: #f0f2f5; }
-        .box { background: white; padding: 20px; border-radius: 10px; display: inline-block; margin-top: 50px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        h1 { color: #1a375f; }
+        body { font-family: sans-serif; background-color: #f0f2f5; padding: 10px; margin: 0; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #1a375f; border-bottom: 2px solid #1a375f; padding-bottom: 10px; }
+        .input-section { display: flex; flex-direction: column; gap: 12px; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #dee2e6; margin-bottom: 20px; }
+        input, select { padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; width: 100%; box-sizing: border-box; }
+        .add-btn { padding: 15px; background: #1a375f; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .prio-high { border-left: 10px solid #dc3545 !important; }
+        .prio-mid { border-left: 10px solid #ffc107 !important; }
+        .prio-low { border-left: 10px solid #28a745 !important; }
+        li { background: #fff; margin-bottom: 12px; padding: 15px; border-radius: 8px; border: 1px solid #eee; display: flex; flex-direction: column; }
+        .completed { opacity: 0.4; background: #f9f9f9 !important; text-decoration: line-through; }
+        .task-header { font-weight: bold; font-size: 17px; margin-bottom: 5px; }
+        .task-info { font-size: 13px; color: #666; margin-bottom: 10px; }
+        .btn-group { display: flex; gap: 5px; }
+        .btn-group button { flex: 1; padding: 8px; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; }
+        .del-btn { background: #ffebee; color: #d9534f; }
+        .line-btn { background: #e7ffed; color: #28a745; }
+        .cal-btn { background: #e8f0fe; color: #4285f4; }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h1>✅ アプリ作成中</h1>
-        <p>この画面が見えたら「成功」です！</p>
-        <input type="text" placeholder="テスト入力">
-        <button onclick="alert('動いています！')">ボタンテスト</button>
+<div class="container">
+    <h2>🤝 チーム共有タスク Pro</h2>
+    <div class="input-section">
+        <input type="text" id="taskInput" placeholder="タスクを入力...">
+        <select id="prioInput">
+            <option value="prio-high">優先：高 (赤)</option>
+            <option value="prio-mid" selected>優先：中 (黄)</option>
+            <option value="prio-low">優先：低 (緑)</option>
+        </select>
+        <div style="display:flex; gap:5px;">
+            <input type="date" id="dateInput" style="flex:2;">
+            <input type="time" id="startInput" style="flex:1;">
+        </div>
+        <button class="add-btn" onclick="addTask()">共有リストに登録</button>
     </div>
+    <ul id="taskList"></ul>
+</div>
+<script>
+    // あなたのFirebase情報をここに反映します
+    const firebaseConfig = {
+        apiKey: "AIzaSyCzKJyqnUrK8bejgnatlxhK6NmxjsOK2f0",
+        authDomain: "biz-task-sync.firebaseapp.com",
+        databaseURL: "https://biz-task-sync-default-rtdb.firebaseio.com",
+        projectId: "biz-task-sync",
+        storageBucket: "biz-task-sync.appspot.com",
+        messagingSenderId: "648219626194", 
+        appId: " 1:648219626194:web:d17cd3e5790f52f57afb0b"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    database.ref('tasks').on('value', (snapshot) => { renderTasks(snapshot.val()); });
+
+    function addTask() {
+        const title = document.getElementById('taskInput').value;
+        const prio = document.getElementById('prioInput').value;
+        const date = document.getElementById('dateInput').value;
+        const start = document.getElementById('startInput').value;
+        if (!title) return alert("内容を入力してください");
+        database.ref('tasks').push({ title, prio, date, start, completed: false });
+        document.getElementById('taskInput').value = '';
+    }
+
+    function renderTasks(tasks) {
+        const list = document.getElementById('taskList');
+        list.innerHTML = '';
+        if (!tasks) return;
+        Object.keys(tasks).forEach(key => {
+            const t = tasks[key];
+            const li = document.createElement('li');
+            li.className = `${t.prio} ${t.completed ? 'completed' : ''}`;
+            li.innerHTML = `
+                <div onclick="toggleTask('${key}', ${t.completed})">
+                    <div class="task-header">${t.title}</div>
+                    <div class="task-info">📅 ${t.date || 'なし'} ⏰ ${t.start || '--:--'}</div>
+                </div>
+                <div class="btn-group">
+                    <button class="line-btn" onclick="shareLine('${t.title}', '${t.date}', '${t.start}')">LINE</button>
+                    <button class="cal-btn" onclick="toGoogle('${t.title}', '${t.date}', '${t.start}')">Google</button>
+                    <button class="del-btn" onclick="deleteTask('${key}')">削除</button>
+                </div>`;
+            list.appendChild(li);
+        });
+    }
+    function toggleTask(key, status) { database.ref('tasks/' + key).update({ completed: !status }); }
+    function deleteTask(key) { if(confirm('削除しますか？')) database.ref('tasks/' + key).remove(); }
+    function shareLine(t, d, s) { window.open(`https://line.me/R/msg/text/?${encodeURIComponent(t + '\n' + d + ' ' + s)}`, '_blank'); }
+    function toGoogle(t, d, s) {
+        if(!d || !s) return alert("日時を入力してください");
+        const dt = d.replace(/-/g, '') + 'T' + s.replace(/:/g, '') + '00';
+        window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(t)}&dates=${dt}/${dt}`, '_blank');
+    }
+</script>
 </body>
 </html>
