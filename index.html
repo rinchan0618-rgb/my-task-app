@@ -2,42 +2,19 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Task Pro</title>
+    <title>My Task App</title>
     <style>
-        body { font-family: sans-serif; background-color: #f0f2f5; padding: 10px; margin: 0; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #1a375f; border-bottom: 2px solid #1a375f; padding-bottom: 10px; }
-        .input-section { display: flex; flex-direction: column; gap: 12px; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #dee2e6; margin-bottom: 20px; }
-        input, select { padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; width: 100%; box-sizing: border-box; }
-        .add-btn { padding: 15px; background: #1a375f; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; }
-        li { background: #fff; margin-bottom: 12px; padding: 15px; border-radius: 8px; border: 1px solid #eee; display: flex; flex-direction: column; }
-        .task-header { font-weight: bold; font-size: 17px; margin-bottom: 5px; }
-        .btn-group { display: flex; gap: 5px; margin-top: 10px; }
-        .btn-group button { flex: 1; padding: 8px; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; }
-        .del-btn { background: #ffebee; color: #d9534f; }
+        body { font-family: sans-serif; text-align: center; background: #f0f2f5; }
+        .box { background: white; padding: 20px; border-radius: 10px; display: inline-block; margin-top: 50px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1 { color: #1a375f; }
     </style>
 </head>
 <body>
-<div class="container">
-    <h2>🤝 テスト用タスクアプリ</h2>
-    <div class="input-section">
-        <input type="text" id="taskInput" placeholder="タスクを入力...">
-        <input type="date" id="dateInput">
-        <button class="add-btn" onclick="addTask()">登録テスト</button>
+    <div class="box">
+        <h1>✅ アプリ作成中</h1>
+        <p>この画面が見えたら「成功」です！</p>
+        <input type="text" placeholder="テスト入力">
+        <button onclick="alert('動いています！')">ボタンテスト</button>
     </div>
-    <ul id="taskList"></ul>
-</div>
-<script>
-    function addTask() {
-        const title = document.getElementById('taskInput').value;
-        const date = document.getElementById('dateInput').value;
-        if (!title) return alert("入力してください");
-        const li = document.createElement('li');
-        li.innerHTML = `<div class="task-header">${title}</div><div>📅 ${date}</div>`;
-        document.getElementById('taskList').appendChild(li);
-        document.getElementById('taskInput').value = '';
-    }
-</script>
 </body>
 </html>
